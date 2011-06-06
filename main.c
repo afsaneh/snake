@@ -15,8 +15,8 @@
 #define DOWNARROW2 's'
 #define QUIT 'q'
 
-#define SNAKELENGTH 7
-
+#define SNAKELENGTH 12
+#define SNAKESPEED 150
 
 struct point makePoint(int x, int y){
 	struct point p = {x, y};
@@ -30,9 +30,10 @@ int main(){
 	int c;
 	int i, j;
 	int dir1 = RIGHT, dir2 = RIGHT;
+	int snake1CurrentDir = dir1;
 	SetConsoleTitle("Snakes");
 	initializeMatrix(canvas);
-	rectangle('\'' , t, WIDTH, HEIGHT);
+	//rectangle('\'' , t, WIDTH, HEIGHT);
 	for (i = 1; i < SNAKELENGTH + 1 ; i++)
 		snakeArray1[i] = makePoint(i,5);
 	snakeArray1[i] = sentinel;
@@ -44,29 +45,35 @@ int main(){
 	printSnake(snakeArray2);
 
 	while((c = getKey()) != QUIT){
+			snake1CurrentDir = dir1;
 			switch (c){
 				case UPARROW1: dir1 = UP; break;
 				case LEFTARROW1: dir1 = LEFT; break;
 				case RIGHTARROW1: dir1 = RIGHT; break;
 				case DOWNARROW1: dir1 = DOWN; break;
+			/*
 				case UPARROW2: dir2 = UP; break;
 				case LEFTARROW2: dir2 = LEFT; break;
 				case RIGHTARROW2: dir2 = RIGHT; break;
 				case DOWNARROW2: dir2 = DOWN; break;
-				default: break;
+			*/	default: break;
 			}
+			dir2 = RIGHT;
 			while( !_kbhit()){
-				Sleep(100);
-				if (moveSnake(snakeArray1, dir1) == 0){
+				Sleep(SNAKESPEED);
+				//printf("ssss :%d", snake1CurrentDir);
+				if (moveSnake(snakeArray1, dir1, snake1CurrentDir) == 0){
 					putPoint(' ', p); 
 					printf("GAME OVER! PLAYER 2 WON!\n");
 					return 0;
 				}
-				else if (moveSnake(snakeArray2, dir2) == 0){
+				moveSnakeAI(snakeArray2, &dir2);
+				//moveSnake(snakeArray2, DOWN);
+				/*else if (moveSnake(snakeArray2, dir2) == 0){
 					putPoint(' ', p); 
 					printf("GAME OVER! PLAYER 1 WON!\n");
 					return 0;
-				}
+				}*/
 				//moveSnake(snakeArray1, dir1);
 				//moveSnake(snakeArray2, dir2);
 		}
