@@ -5,75 +5,77 @@
 #include <conio.h>
 #include "snake.h"
  
-void printSnake(struct point s[]){
+void printSnake(struct snake *s){
 	//for printing a snake array
 	int i = 0;
-	while(s[i].x != -1) //while the array is not (-1, -1) ==> end of 
-		putPoint('0', s[i++]);	
+	while(s -> points[i].x != -1) //while the array is not (-1, -1) ==> end of 
+		putPoint('0', s -> points[i++]);
 }
 
-int sentinelIndex(struct point s[]){
+int sentinelIndex(struct snake *s){
 	int i;
 
-	for(i = 0; i < (HEIGHT*WIDTH); i++)
-		if(s[i].x == -1 && s[i].y == -1)
+	for(i = 0; i < (s -> len) + 1; i++)
+		if(s -> points[i].x == -1 && s -> points[i].y == -1)
 			return i;
 	return -1;
-	
 }
 
-struct point head(struct point s[]){
-	return s[0];
+struct point head(struct snake *s){
+	return s -> points[0];
 }
 
-struct point tail(struct point s[]){
-	return s[sentinelIndex(s) - 1];
+struct point tail(struct snake *s){
+	return s -> points[(s -> len) - 1];
 }
 
 
-int moveSnake(struct point s[], int direction, int currentDirection){
+int moveSnake(struct snake *s, int direction){
 	//let's not lose if the current direction is left and you press right
-	//printf("move: %d", currentDirection);
-	if (direction == UP && currentDirection == DOWN)
+	
+	if (direction == UP && s -> direction == DOWN)
 		direction = DOWN;
-	if (direction == DOWN && currentDirection == UP)
+	if (direction == DOWN && s -> direction == UP)
 		direction = UP;
-	if (direction == RIGHT && currentDirection == LEFT)
+	if (direction == RIGHT && s -> direction == LEFT)
 		direction = LEFT;
-	if (direction == LEFT && currentDirection == RIGHT)
+	if (direction == LEFT && s -> direction == RIGHT){
 		direction = RIGHT;
+	}
 
 	if (direction == UP){
-		//if (currentDirection == DOWN)
-		//	return 1;
 		insertTail(s, (addY(tail(s), -1)));
 		if (!isFreeSpace(tail(s)))
 			return 0;
 	}
 	else if (direction == DOWN){
-		//if (currentDirection == UP)
-		//	return 1;
 		insertTail(s, (addY(tail(s), 1)));
 		if (!isFreeSpace(tail(s)))
 			return 0;
 	}
 	else if (direction == RIGHT){
-		//if (currentDirection == LEFT)
-		//	return 1;
+		//printf("\nSnake after press right: ");
+		//snakeToString(s);
+		//printf("\nfirst\n");
+		//pointToString(tail(s));
+		//printf("\naddx tail: ");
+		//pointToString(addX(tail(s), 1));
 		insertTail(s, (addX(tail(s), 1)));
+		//printf("\nsnake after insert:");
+		//snakeToString(s);
+		//printf("\ntail\n");
+		//pointToString(tail(s));
 		if (!isFreeSpace(tail(s)))
 			return 0;
 	}
 	else if (direction == LEFT){
-		//if (currentDirection == RIGHT)
-		//	return 1;
 		insertTail(s, (addX(tail(s), -1)));
 		if (!isFreeSpace(tail(s)))
 			return 0;
 	}
-
 	putPoint(' ', head(s));
 	removeHead(s);
+	//pointToString(tail(&s));
 	putPoint('0', tail(s));
 
 	return 1;
@@ -81,113 +83,112 @@ int moveSnake(struct point s[], int direction, int currentDirection){
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-int moveSnakeAI(struct point s[], int *direction){
-	struct point pointUp = addY(tail(s), -1);
-	struct point pointDown = addY(tail(s), 1);
-	struct point pointRight = addX(tail(s), 1);
-	struct point pointLeft = addX(tail(s), -1);
-	int currentDirection = *direction;
+int moveSnakeAI(struct snake *sp){
+	struct point pointUp = addY(tail(sp), -1);
+	struct point pointDown = addY(tail(sp), 1);
+	struct point pointRight = addX(tail(sp), 1);
+	struct point pointLeft = addX(tail(sp), -1);
 	int makeUnexpectedTurn = 0;
 
 	if (rand() % 10 == 0)
 		makeUnexpectedTurn = 1;
 
-	putPoint(' ', head(s));
+	putPoint(' ', head(sp));
 
-	if (*direction == UP){
+	if (sp -> direction == UP){
 		if (isFreeSpace(pointUp)){
 			if (makeUnexpectedTurn && isFreeSpace(pointRight)){
-				*direction = RIGHT;
-				return moveSnake(s, RIGHT, currentDirection);
+				sp -> direction = RIGHT;
+				return moveSnake(sp, RIGHT);
 			}
 			if (makeUnexpectedTurn && isFreeSpace(pointLeft)){
-				*direction = LEFT;
-				return moveSnake(s, LEFT, currentDirection);
+				sp -> direction = LEFT;
+				return moveSnake(sp, LEFT);
 			}
 
-			return moveSnake(s, UP, currentDirection);
+			return moveSnake(sp, UP);
 			}
 		else{
 			if(isFreeSpace(pointRight)){
-				*direction = RIGHT;
-				return moveSnake(s, RIGHT, currentDirection);
+				sp -> direction = RIGHT;
+				return moveSnake(sp, RIGHT);
 			}
 			else{
-				*direction = LEFT;
-				return moveSnake(s, LEFT, currentDirection);
+				sp -> direction = LEFT;
+				return moveSnake(sp, LEFT);
 			}
 		}
 	}
-	else if (*direction == DOWN){
+	else if (sp -> direction == DOWN){
 		if (isFreeSpace(pointDown)){
 			if (makeUnexpectedTurn && isFreeSpace(pointRight)){
-				*direction = RIGHT;
-				return moveSnake(s, RIGHT, currentDirection);
+				sp -> direction = RIGHT;
+				return moveSnake(sp, RIGHT);
 			}
 			if (makeUnexpectedTurn && isFreeSpace(pointLeft)){
-				*direction = LEFT;
-				return moveSnake(s, LEFT, currentDirection);
+				sp -> direction = LEFT;
+				return moveSnake(sp, LEFT);
 			}
-			return moveSnake(s, DOWN, currentDirection);
+			return moveSnake(sp, DOWN);
 		
 			}else{
 			if(isFreeSpace(pointRight)){
-				*direction = RIGHT;
-				return moveSnake(s, RIGHT, currentDirection);
+				sp -> direction = RIGHT;
+				return moveSnake(sp, RIGHT);
 			}
 			else{
-				*direction = LEFT;
-				return moveSnake(s, LEFT, currentDirection);
+				sp -> direction = LEFT;
+				return moveSnake(sp, LEFT);
 			}
 		}
 	}
-	else if (*direction == RIGHT){
+	else if (sp -> direction == RIGHT){
 		if (isFreeSpace(pointRight)){
 			if (makeUnexpectedTurn && isFreeSpace(pointUp)){
-				*direction = UP;
-				return moveSnake(s, UP, currentDirection);
+				sp -> direction = UP;
+				return moveSnake(sp, UP);
 			}
 			if (makeUnexpectedTurn && isFreeSpace(pointDown)){
-				*direction = DOWN;
-				return moveSnake(s, DOWN, currentDirection);
+				sp -> direction = DOWN;
+				return moveSnake(sp, DOWN);
 			}
 			
-			return moveSnake(s, RIGHT, currentDirection);
+			return moveSnake(sp, RIGHT);
 		
 			}else{
 			if(isFreeSpace(pointUp)){
-				*direction = UP;
-				return moveSnake(s, UP, currentDirection);
+				sp -> direction = UP;
+				return moveSnake(sp, UP);
 			}
 			else{
-				*direction = DOWN;
-				return moveSnake(s, DOWN, currentDirection);
+				sp -> direction = DOWN;
+				return moveSnake(sp, DOWN);
 			}
 		}
 	}
-	else if (*direction == LEFT){
+	else if (sp -> direction == LEFT){
 		if (isFreeSpace(pointLeft)){
 			if (makeUnexpectedTurn && isFreeSpace(pointUp)){
-				*direction = UP;
-				return moveSnake(s, UP, currentDirection);
+				sp -> direction = UP;
+				return moveSnake(sp, UP);
 			}
 			if (makeUnexpectedTurn && isFreeSpace(pointDown)){
-				*direction = DOWN;
-				return moveSnake(s, DOWN, currentDirection);
+				sp -> direction = DOWN;
+				return moveSnake(sp, DOWN);
 			}
 	
 
-		return moveSnake(s, LEFT, currentDirection);
+		return moveSnake(sp, LEFT);
 		
 		}
 		else{
 			if(isFreeSpace(pointUp)){
-				*direction = UP;
-				return moveSnake(s, UP, currentDirection);
+				sp -> direction = UP;
+				return moveSnake(sp, UP);
 			}
 			else{
-				*direction = DOWN;
-				return moveSnake(s, DOWN, currentDirection);
+				sp -> direction = DOWN;
+				return moveSnake(sp, DOWN);
 			}
 		}
 	}
@@ -197,39 +198,48 @@ int moveSnakeAI(struct point s[], int *direction){
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-void insertHead(struct point s[], struct point m){
+void insertHead(struct snake *s, struct point m){
 	//
 	int i;
 
 	for(i = sentinelIndex(s) ; i > 0; i--)
-		s[i+1] = s[i];
-	s[0] = m;
+		s -> points[i+1] = s -> points[i];
+	s -> points[0] = m;
 }
 
-void insertTail(struct point s[], struct point m){
+void insertTail(struct snake *s, struct point m){
 	//
 
-	s[sentinelIndex(s)+ 1] = sentinel;
-	s[sentinelIndex(s)] = m;
+	//s.points[sentinelIndex(s) + 1] = SENTINEL;
+	//s.points[sentinelIndex(s)] = m;
+	//printf("\n snake in inserttail: ");
+	//snakeToString(s);
+	s -> points[(s -> len) + 1] = SENTINEL;
+	s -> points[(s -> len)] = m;
+	s -> len += 1;
+	//printf("\n snake after inserttail: ");
+	//snakeToString(s);
 }
 
-void removeHead(struct point s[]){
+void removeHead(struct snake *s){
 		
 	int i;
 
 	for(i = 0; i < sentinelIndex(s); i++)
-		s[i] = s[i+1];
+		s -> points[i] = s -> points[i+1];
+	s -> len -= 1;
 }
 
-void removeTail(struct point s[]){
-	s[sentinelIndex(s) - 1] = sentinel;
+void removeTail(struct snake *s){
+	s -> points[sentinelIndex(s) - 1] = SENTINEL;
 }
 
-void snakeToString(struct point s[]){
+void snakeToString(struct snake *s){
 	int i;
 
-	for(i = 0; s[i].x != -1 ; i++)
-		pointToString(s[i]);
+	for(i = 0; s -> points[i].x != -1 ; i++)
+	//for(i = 0; i < (s -> len) ; i++)
+		pointToString(s -> points[i]);
 }
 
 /*void initSnake(struct point s[], struct point head){
@@ -239,11 +249,13 @@ void snakeToString(struct point s[]){
 		s[i] = head;
 		head.x++;
 	}
-	s[i] = sentinel;
+	s[i] = SENTINEL;
 }*/
 
 int isFreeSpace(struct point p){
-	if (canvas[p.y][p.x] != '0' && canvas[p.y][p.x] != '\'' )
+	//printf("\nFree Space: ");
+	//pointToString(p);
+	if (canvas[p.y][p.x] == ' ' )
 		return 1;
 	return 0;		
 }

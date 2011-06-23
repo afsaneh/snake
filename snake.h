@@ -4,11 +4,19 @@
 #define DOWN 2
 #define RIGHT 3
 #define LEFT 4
-#define sentinel makePoint(-1, -1)
+#define SENTINEL makePoint(-1, -1)
+#define SNAKELENGTH 12
 
 struct point{
 	int x;
 	int y;
+};
+
+struct snake{
+	struct point points[HEIGHT * WIDTH];
+	int direction;
+	int len;
+	char color[20];
 };
 
 //main.c
@@ -22,20 +30,21 @@ void pointToString(struct point);
 struct point addX(struct point, int);
 struct point addY(struct point, int);
 //snake.c
-void printSnake(struct point s[]);
-struct point head(struct point[]);
-struct point tail(struct point[]);
-int moveSnake(struct point[], int, int);
-int moveSnakeAI(struct point[], int *direction);
-void insertHead(struct point[], struct point);
-void insertTail(struct point[], struct point);
-void removeHead(struct point[]);
-void removeTail(struct point[]);
-void snakeToString(struct point[]);
+void printSnake(struct snake *s);
+int sentinelIndex(struct snake *s);
+struct point head(struct snake *s);
+struct point tail(struct snake *s);
+int moveSnake(struct snake *s, int direction);
+int moveSnakeAI(struct snake *s);
+void insertHead(struct snake *s, struct point m);
+void insertTail(struct snake *s, struct point m);
+void removeHead(struct snake *s);
+void removeTail(struct snake *s);
+void snakeToString(struct snake *s);
 //void initSnake(struct point[], struct point);
-int isFreeSpace(struct point);
+int isFreeSpace(struct point p);
 
 char canvas[HEIGHT][WIDTH];
 
-struct point snakeArray1[HEIGHT*WIDTH];
-struct point snakeArray2[HEIGHT*WIDTH];
+//struct point snakeArray1[HEIGHT*WIDTH];
+//struct point snakeArray2[HEIGHT*WIDTH];

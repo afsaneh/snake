@@ -2,10 +2,10 @@
 <settings version="1.0">
 	<category name="snake.c">
 		<category name="Window">
-			<property name="Left" type="integer">0</property>
-			<property name="Top" type="integer">0</property>
-			<property name="Right" type="integer">1024</property>
-			<property name="Bottom" type="integer">351</property>
+			<property name="Left" type="integer">50</property>
+			<property name="Top" type="integer">50</property>
+			<property name="Right" type="integer">852</property>
+			<property name="Bottom" type="integer">401</property>
 			<property name="Maximized" type="integer">0</property>
 			<property name="Active" type="integer">0</property>
 		</category>
@@ -14,7 +14,7 @@
 		<category name="Window">
 			<property name="Left" type="integer">25</property>
 			<property name="Top" type="integer">25</property>
-			<property name="Right" type="integer">1049</property>
+			<property name="Right" type="integer">827</property>
 			<property name="Bottom" type="integer">376</property>
 			<property name="Maximized" type="integer">0</property>
 			<property name="Active" type="integer">0</property>
@@ -24,7 +24,7 @@
 		<category name="Window">
 			<property name="Left" type="integer">-8</property>
 			<property name="Top" type="integer">-30</property>
-			<property name="Right" type="integer">1087</property>
+			<property name="Right" type="integer">1078</property>
 			<property name="Bottom" type="integer">477</property>
 			<property name="Maximized" type="integer">1</property>
 			<property name="Active" type="integer">1</property>
