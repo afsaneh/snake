@@ -45,9 +45,7 @@ void removeTail(struct snake *);
 void snakeToString(struct snake *);
 //void initSnake(struct point[], struct point);
 int isFreeSpace(struct point p);
-void gameover(char []);
+void userGameover(char []);
+void pcGameover(char []);
 
 char canvas[HEIGHT][WIDTH];
-
-//struct point snakeArray1[HEIGHT*WIDTH];
-//struct point snakeArray2[HEIGHT*WIDTH];

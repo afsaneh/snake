@@ -10,10 +10,10 @@
 #define LEFTARROW1 1001
 #define RIGHTARROW1 1003
 #define DOWNARROW1 1004
-#define UPARROW2 'w'
+/*#define UPARROW2 'w'
 #define LEFTARROW2 'a'
 #define RIGHTARROW2 'd'
-#define DOWNARROW2 's'
+#define DOWNARROW2 's'*/
 #define QUIT 'q'
 
 #define SNAKESPEED 150
@@ -24,12 +24,12 @@ struct point makePoint(int x, int y){
 }
 
 int main(){
-	struct point p = {WIDTH /2 - 10, HEIGHT /2};
 	struct snake snake1, snake2;
 
 	snake1.len = SNAKELENGTH;
 	snake1.color = FOREGROUND_RED | FOREGROUND_INTENSITY;
 	snake1.shape = '0';
+
 	snake2.len = SNAKELENGTH;
 	snake2.color = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY;
 	snake2.shape = 'x';
@@ -41,17 +41,11 @@ int main(){
 	int speed = SNAKESPEED;
 	int rx, ry, dirx, diry;
 	int retSnake1, retSnake2;
-	struct point p1, p2;
-	p1.x = 3;
-	p1.y = 5;
-	p2.x = 6;
-	p2.y = 6;
 
 	SetConsoleTitle("Snakes");
 	initializeMatrix(canvas);
-	system("COLOR 5");
 
-	for (i = 0; i < snake1.len ; i++)
+	for (i = 0; i < snake1.len; i++)
 		snake1.points[i] = makePoint(i,5);
 	snake1.points[i] = SENTINEL;
 	printSnake(&snake1);
@@ -61,8 +55,8 @@ int main(){
 	snake2.points[j] = SENTINEL;
 	snake2.direction = RIGHT;
 	printSnake(&snake2);
+	
 	srand(time(NULL));
-	//printf("%d", isClosePoints(p1, p2));
 	
 	while((c = getKey()) != QUIT){
 			snake1.direction = dir1;
@@ -75,17 +69,15 @@ int main(){
 			}
 			while( !_kbhit()){
 				count++;
-				if (rand() % 200 == 0)
-					{
+				if (rand() % 200 == 0){
 					rx = rand() % (WIDTH - 8) + 4;
 					ry = rand() % (HEIGHT - 8) + 4;
 					dirx = rand() % 3 - 1;
 					diry = rand() % 3 - 1;
-					//if (!isClose(tale(&snake1), makePoint(rx, ry))) 
 					line('*', makePoint(rx, ry), makePoint(rx + dirx*4 , ry + diry*4));
-					}//insertTail(&snake1, makePoint(addX(tail(&snake1), 1).x, tail(&snake1).y));*/	 
+				}
 				Sleep(speed);
-				if (count % 10 == 0 && speed > 50){
+				if (count % 50 == 0 && speed > 50){
 					count = 0;
 					speed *= 0.99;
 				}
@@ -93,28 +85,15 @@ int main(){
 				retSnake2 = moveSnakeAI(&snake2);
 			
 				if (retSnake1 ==0 && retSnake2 == 0)
-					printf("GAME OVER! BUT NOBODY WONS!");
+					printf("GAME OVER! BUT NOBODY WON!");
 				if (retSnake1 == 0 ){
-					putPoint(' ', p, snake1.color);
-					gameover("Player 2 won!");
+					userGameover("Computer won!");
 					return 0;
 				}
 				else if (retSnake2 == 0){
-					gameover("Player 1 won!");
-					printf("\a");
-				}
-				/*if (moveSnake(&snake1, dir1) == 0){
-					putPoint(' ', p, snake1.color); 
-					//printf("GAME OVER! PLAYER 2 WON!\n");
-					//printf("\a");
-					gameover("Player 2 won!");
+					pcGameover("You won!");
 					return 0;
 				}
-				if (moveSnakeAI(&snake2) == 0){
-					gameover("Player 1 won!");
-					//printf("\n\nGAME OVER! PLAYER 1 WON!\n");
-					printf("\a");
-				}*/
 		}
 	}
 }
@@ -250,15 +229,7 @@ struct point addY(struct point p, int amount){
 	return p;
 }
 
-int isClosePoints(struct point p1, struct point p2){
-	if (p2.x == p1.x)
-		
-	if (fabs(p1.x - p2.x) < 3 && fabs(p1.y - p2.y) < 3)
-		return 1;
-	return 0;
-}
-
-void gameover(char m[]){
+void userGameover(char m[]){
 
 	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 	WORD wOldColorAttrs;
@@ -268,25 +239,64 @@ void gameover(char m[]){
 	Sleep(1000);
 	system("cls");
 
- 	 /*
-  	 * First save the current color information
-   	*/
 	GetConsoleScreenBufferInfo(h, &csbiInfo);
 	wOldColorAttrs = csbiInfo.wAttributes;
 	sprintf(string, "%s", m);
 	printf("\n\n\n\n\t\t\t\t%s", string);
   
- 	 /*
-  	 * Set the new color information
-   	*/
-	//SetConsoleTextAttribute (h, BACKGROUND_GREEN|FOREGROUND_INTENSITY );
-	//SetConsoleTextAttribute(h,FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY | BACKGROUND_BLUE);
+	SetConsoleTextAttribute(h,FOREGROUND_RED |
+							 FOREGROUND_GREEN | 
+							FOREGROUND_INTENSITY);
 	printf("\a");
 	char sentgo[]="\n\n"
               "\n\n\n\n\n\n"
               "\t\t\t  Ok! Seems you've become sooks!\n"
               "\n\n"
               "\t\t\t  Concentrate more on the game!\n"
+              "\n\n"
+              "\t\t\t  Ha Ha\n"
+              "\n\n"
+              "\t\t\t  .....\n"
+              "\n\n\t\t\t  ."
+              "\n\n\t\t\t  ."
+              "\n\n\t\t\t  ."
+              "\n\n\t\t\t  ."
+              "\n\n\t\t\t"
+              "\n\t\t\t  G  A  M  E    O  V  E  R!\n";
+                         
+	size=strlen(sentgo);
+	for(x=0;x<size;x++){   
+		Sleep(40); 
+		printf("%c",sentgo[x]);
+	}
+	Sleep(4000);
+	exit(0);
+}
+
+void pcGameover(char m[]){
+
+	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+	WORD wOldColorAttrs;
+	CONSOLE_SCREEN_BUFFER_INFO csbiInfo; 
+	int size, x;
+	char string[50];
+	Sleep(1000);
+	system("cls");
+
+	GetConsoleScreenBufferInfo(h, &csbiInfo);
+	wOldColorAttrs = csbiInfo.wAttributes;
+	sprintf(string, "%s", m);
+	printf("\n\n\n\n\t\t\t\t%s", string);
+  
+	SetConsoleTextAttribute(h,FOREGROUND_RED |
+							 FOREGROUND_GREEN | 
+							FOREGROUND_INTENSITY);
+	printf("\a");
+	char sentgo[]="\n\n"
+              "\n\n\n\n\n\n"
+              "\t\t\t  Good job!\n"
+              "\n\n"
+              "\t\t\t  Seems PC has become sooks!\n"
               "\n\n"
               "\t\t\t  Ha Ha\n"
               "\n\n"

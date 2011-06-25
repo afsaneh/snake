@@ -8,7 +8,7 @@
 void printSnake(struct snake *s){
 	//for printing a snake array
 	int i = 0;
-	while(s -> points[i].x != -1) //while the array is not (-1, -1) ==> end of 
+	while(s -> points[i].x != -1) //while the array is not (-1, -1)
 		putPoint(s -> shape, s -> points[i++], s -> color);
 }
 
@@ -31,7 +31,6 @@ struct point tail(struct snake *s){
 
 
 int moveSnake(struct snake *s, int direction){
-	//let's not lose if the current direction is left and you press right
 	
 	if (direction == UP && s -> direction == DOWN)
 		direction = DOWN;
@@ -232,8 +231,7 @@ void insertHead(struct snake *s, struct point m){
 	//
 	int i;
 
-	//for(i = sentinelIndex(s) ; i > 0; i--)
-		for(i = s -> len ; i > 0; i--)
+	for(i = s -> len ; i > 0; i--)
 		s -> points[i+1] = s -> points[i];
 	s -> points[0] = m;
 }
