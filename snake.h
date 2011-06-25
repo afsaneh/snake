@@ -16,19 +16,21 @@ struct snake{
 	struct point points[HEIGHT * WIDTH];
 	int direction;
 	int len;
-	//BOOL WINAPI color;
+	int color;
+	char shape;
 };
 
 //main.c
 struct point makePoint(int, int);
 int getKey();
 void initializeMatrix(char matrix[][WIDTH]);
-void putPoint(char, struct point);
+void putPoint(char, struct point, int color = FOREGROUND_GREEN);
 void line(char, struct point, struct point);
 void rectangle( char, struct point, int, int);
 void pointToString(struct point);	
 struct point addX(struct point, int);
 struct point addY(struct point, int);
+int isClosePoints(struct point, struct point);
 //snake.c
 void printSnake(struct snake *);
 int sentinelIndex(struct snake *);

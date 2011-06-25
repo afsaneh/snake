@@ -9,7 +9,7 @@ void printSnake(struct snake *s){
 	//for printing a snake array
 	int i = 0;
 	while(s -> points[i].x != -1) //while the array is not (-1, -1) ==> end of 
-		putPoint('0', s -> points[i++]);
+		putPoint(s -> shape, s -> points[i++], s -> color);
 }
 
 int sentinelIndex(struct snake *s){
@@ -63,9 +63,9 @@ int moveSnake(struct snake *s, int direction){
 		if (!isFreeSpace(tail(s)))
 			return 0;
 	}
-	putPoint(' ', head(s));
+	putPoint(' ', head(s),s -> color);
 	removeHead(s);
-	putPoint('0', tail(s));
+	putPoint(s -> shape, tail(s), s -> color);
 
 	return 1;
 }
@@ -87,17 +87,26 @@ int moveSnakeAI(struct snake *s){
 
 	if (s -> direction == UP){
 		if (isFreeSpace(pointUp)){
-			if (makeUnexpectedTurn && isFreeSpace(pointRight)){
-				s -> direction = RIGHT;
-				return moveSnake(s, RIGHT);
+			if (makeUnexpectedTurn){
+				firstDir = RIGHT;
+				secondDir = LEFT;
 			}
-			if (makeUnexpectedTurn && isFreeSpace(pointLeft)){
-				s -> direction = LEFT;
-				return moveSnake(s, LEFT);
+			if (rand() % 2 == 0){
+					firstDir = LEFT;
+					secondDir = RIGHT;
 			}
-
+			if (firstDir == RIGHT && isFreeSpace(pointRight) ||
+					firstDir == LEFT && isFreeSpace(pointLeft)){
+					s -> direction = firstDir;
+					return moveSnake(s, firstDir);
+			}
+			if ((secondDir == LEFT && isFreeSpace(pointLeft)) || 
+					(secondDir == RIGHT && isFreeSpace(pointDown))){
+					s -> direction = secondDir;
+					return moveSnake(s, secondDir);
+			}
 			return moveSnake(s, UP);
-			}
+		}
 		else{
 			if(isFreeSpace(pointRight)){
 				s -> direction = RIGHT;
@@ -109,19 +118,30 @@ int moveSnakeAI(struct snake *s){
 			}		
 		}
 	}
+
 	else if (s -> direction == DOWN){
 		if (isFreeSpace(pointDown)){
-			if (makeUnexpectedTurn && isFreeSpace(pointRight)){
-				s -> direction = RIGHT;
-				return moveSnake(s, RIGHT);
+			if (makeUnexpectedTurn){
+				firstDir = RIGHT;
+				secondDir = LEFT;
 			}
-			if (makeUnexpectedTurn && isFreeSpace(pointLeft)){
-				s -> direction = LEFT;
-				return moveSnake(s, LEFT);
+			if (rand() % 2 == 0){
+					firstDir = LEFT;
+					secondDir = RIGHT;
+			}
+			if (firstDir == RIGHT && isFreeSpace(pointRight) ||
+					firstDir == LEFT && isFreeSpace(pointLeft)){
+					s -> direction = firstDir;
+					return moveSnake(s, firstDir);
+			}
+			if ((secondDir == LEFT && isFreeSpace(pointLeft)) || 
+					(secondDir == RIGHT && isFreeSpace(pointDown))){
+					s -> direction = secondDir;
+					return moveSnake(s, secondDir);
 			}
 			return moveSnake(s, DOWN);
-		
-			}else{
+		}
+		else{
 				if(isFreeSpace(pointRight)){
 					s -> direction = RIGHT;
 					return moveSnake(s, RIGHT);
@@ -256,7 +276,7 @@ void snakeToString(struct snake *s){
 }*/
 
 int isFreeSpace(struct point p){
-	if (canvas[p.y][p.x] == ' ' )
+	if (canvas[p.y][p.x] == ' ')
 		return 1;
-	return 0;		
+	return 0;
 }

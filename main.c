@@ -28,7 +28,11 @@ int main(){
 	struct snake snake1, snake2;
 
 	snake1.len = SNAKELENGTH;
+	snake1.color = FOREGROUND_RED | FOREGROUND_INTENSITY;
+	snake1.shape = '0';
 	snake2.len = SNAKELENGTH;
+	snake2.color = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY;
+	snake2.shape = 'x';
 
 	int c;
 	int i, j;
@@ -36,6 +40,12 @@ int main(){
 	int dir1 = RIGHT;
 	int speed = SNAKESPEED;
 	int rx, ry, dirx, diry;
+	int retSnake1, retSnake2;
+	struct point p1, p2;
+	p1.x = 3;
+	p1.y = 5;
+	p2.x = 6;
+	p2.y = 6;
 
 	SetConsoleTitle("Snakes");
 	initializeMatrix(canvas);
@@ -52,7 +62,8 @@ int main(){
 	snake2.direction = RIGHT;
 	printSnake(&snake2);
 	srand(time(NULL));
-
+	//printf("%d", isClosePoints(p1, p2));
+	
 	while((c = getKey()) != QUIT){
 			snake1.direction = dir1;
 			switch (c){
@@ -64,10 +75,10 @@ int main(){
 			}
 			while( !_kbhit()){
 				count++;
-				if (rand() % 500 == 0)
+				if (rand() % 200 == 0)
 					{
-					rx = rand() % WIDTH;
-					ry = rand() % HEIGHT;
+					rx = rand() % (WIDTH - 8) + 4;
+					ry = rand() % (HEIGHT - 8) + 4;
 					dirx = rand() % 3 - 1;
 					diry = rand() % 3 - 1;
 					//if (!isClose(tale(&snake1), makePoint(rx, ry))) 
@@ -78,17 +89,22 @@ int main(){
 					count = 0;
 					speed *= 0.99;
 				}
-				/*ret1 = movesnake(sjokfokoe)
-				ret2 = movesnakeAi(fkeo)
-
-				if ret1==0 && ret2 ==0
-					pflple
-				if ret1=0
-						1 baakht
-				else if ret2=0
-						2bakht*/
-				if (moveSnake(&snake1, dir1) == 0){
-					putPoint(' ', p); 
+				retSnake1 = moveSnake(&snake1, dir1);
+				retSnake2 = moveSnakeAI(&snake2);
+			
+				if (retSnake1 ==0 && retSnake2 == 0)
+					printf("GAME OVER! BUT NOBODY WONS!");
+				if (retSnake1 == 0 ){
+					putPoint(' ', p, snake1.color);
+					gameover("Player 2 won!");
+					return 0;
+				}
+				else if (retSnake2 == 0){
+					gameover("Player 1 won!");
+					printf("\a");
+				}
+				/*if (moveSnake(&snake1, dir1) == 0){
+					putPoint(' ', p, snake1.color); 
 					//printf("GAME OVER! PLAYER 2 WON!\n");
 					//printf("\a");
 					gameover("Player 2 won!");
@@ -98,7 +114,7 @@ int main(){
 					gameover("Player 1 won!");
 					//printf("\n\nGAME OVER! PLAYER 1 WON!\n");
 					printf("\a");
-				}
+				}*/
 		}
 	}
 }
@@ -132,7 +148,7 @@ void initializeMatrix(char matrix[][WIDTH]){
 			matrix[i][j] = ' ';
 }
 	
-void putPoint(char character , struct point p){
+void putPoint(char character , struct point p, int color){
 	//put the character in (x,y) position in canvas & set cursor in (x,y) position in console 
 	HANDLE hOut;
     COORD Position;
@@ -145,11 +161,7 @@ void putPoint(char character , struct point p){
     Position.X = p.x;
     Position.Y = p.y;
     SetConsoleCursorPosition(hOut, Position);
-	SetConsoleTextAttribute(hOut,//BACKGROUND_GREEN| 
-								//BACKGROUND_INTENSITY|
-								FOREGROUND_RED | 
-								FOREGROUND_GREEN | 
-								FOREGROUND_INTENSITY);
+	SetConsoleTextAttribute(hOut,color);
     putchar(character);
 }
 
@@ -238,6 +250,14 @@ struct point addY(struct point p, int amount){
 	return p;
 }
 
+int isClosePoints(struct point p1, struct point p2){
+	if (p2.x == p1.x)
+		
+	if (fabs(p1.x - p2.x) < 3 && fabs(p1.y - p2.y) < 3)
+		return 1;
+	return 0;
+}
+
 void gameover(char m[]){
 
 	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -264,9 +284,9 @@ void gameover(char m[]){
 	printf("\a");
 	char sentgo[]="\n\n"
               "\n\n\n\n\n\n"
-              "\t\t\t  Ok! Seems you become sooks!\n"
+              "\t\t\t  Ok! Seems you've become sooks!\n"
               "\n\n"
-              "\t\t\t  Try to be more concentrated!\n"
+              "\t\t\t  Concentrate more on the game!\n"
               "\n\n"
               "\t\t\t  Ha Ha\n"
               "\n\n"
