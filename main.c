@@ -3,6 +3,7 @@
 #include <math.h>
 #include <windows.h>
 #include <conio.h>
+#include <time.h>
 #include "snake.h"
 
 #define UPARROW1 1002
@@ -31,32 +32,27 @@ int main(){
 
 	int c;
 	int i, j;
-	int dir1 = RIGHT;
 	int count = 0;
+	int dir1 = RIGHT;
 	int speed = SNAKESPEED;
 	int rx, ry, dirx, diry;
+
 	SetConsoleTitle("Snakes");
 	initializeMatrix(canvas);
-	system("COLOR 8E");
-	//rectangle('\'' , t, WIDTH, HEIGHT);
+	system("COLOR 85");
+
 	for (i = 0; i < snake1.len ; i++)
 		snake1.points[i] = makePoint(i,5);
 	snake1.points[i] = SENTINEL;
-	//initSnake(snakeArray, p);
 	printSnake(&snake1);
+
 	for(j = 0; j < snake2.len ; j++)
 		snake2.points[j] = makePoint(j,10);
 	snake2.points[j] = SENTINEL;
 	snake2.direction = RIGHT;
 	printSnake(&snake2);
-	//snakeToString(&snake1);
+	srand(time(NULL));
 
-	/*insertTail(&snake1, makePoint(addX(tail(&snake1), 1).x, 5));
-	insertTail(&snake1, makePoint(addX(tail(&snake1), 1).x, 5));
-	insertTail(&snake1, makePoint(addX(tail(&snake1), 1).x, 5));
-	insertTail(&snake1, makePoint(addX(tail(&snake1), 1).x, 5));*/
-	//snakeToString(&snake1);
-	//printSnake(&snake1);
 	while((c = getKey()) != QUIT){
 			snake1.direction = dir1;
 			switch (c){
@@ -67,27 +63,31 @@ int main(){
 				default: break;
 			}
 			while( !_kbhit()){
-				/*if (rand() % 10 == 0)
+				count++;
+				if (rand() % 20 == 0)
 					{
 					rx = rand() % WIDTH;
 					ry = rand() % HEIGHT;
 					dirx = rand() % 3 - 1;
 					diry = rand() % 3 - 1;
-					if (!isClose(tale(&snake1), makePoint(rx, ry))) 
+					//if (!isClose(tale(&snake1), makePoint(rx, ry))) 
 					line('*', makePoint(rx, ry), makePoint(rx + dirx*4 , ry + diry*4));
 					}//insertTail(&snake1, makePoint(addX(tail(&snake1), 1).x, tail(&snake1).y));*/	 
 				Sleep(speed);
-				/*if (count % 10 == 0 && speed > 50)
-					speed *= 0.99;*/
+				if (count % 10 == 0 && speed > 50){
+					count = 0;
+					speed *= 0.99;
+				}
 				if (moveSnake(&snake1, dir1) == 0){
-					count++;
 					putPoint(' ', p); 
-					printf("GAME OVER! PLAYER 2 WON!\n");
-					printf("\a");
+					//printf("GAME OVER! PLAYER 2 WON!\n");
+					//printf("\a");
+					gameover("Player 2 won!");
 					return 0;
 				}
 				if (moveSnakeAI(&snake2) == 0){
-					printf("\n\nGAME OVER! PLAYER 1 WON!\n");
+					gameover("Player 1 won!");
+					//printf("\n\nGAME OVER! PLAYER 1 WON!\n");
 					printf("\a");
 				}
 		}
@@ -95,7 +95,7 @@ int main(){
 }
 
 int getKey(void){
-	//get a key and return its ASCII number
+	//get a key and return its ASCII number	
 
 	int c = _getch();
 
@@ -136,6 +136,11 @@ void putPoint(char character , struct point p){
     Position.X = p.x;
     Position.Y = p.y;
     SetConsoleCursorPosition(hOut, Position);
+	//SetConsoleTextAttribute(hOut,//BACKGROUND_GREEN| 
+								//BACKGROUND_INTENSITY|
+								//FOREGROUND_RED | 
+								//FOREGROUND_GREEN | 
+								//FOREGROUND_INTENSITY);
     putchar(character);
 }
 
@@ -222,4 +227,53 @@ struct point addY(struct point p, int amount){
 	if(p.y < 0)
 		p.y = p.y + HEIGHT;
 	return p;
+}
+
+void gameover(char m[]){
+
+	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+	WORD wOldColorAttrs;
+	CONSOLE_SCREEN_BUFFER_INFO csbiInfo; 
+	int size, x;
+	char string[50];
+	Sleep(1000);
+	system("cls");
+
+ 	 /*
+  	 * First save the current color information
+   	*/
+	GetConsoleScreenBufferInfo(h, &csbiInfo);
+	wOldColorAttrs = csbiInfo.wAttributes;
+	sprintf(string, "%s", m);
+	printf("\n\n\n\n\t\t\t\t%s", string);
+  
+ 	 /*
+  	 * Set the new color information
+   	*/
+	//SetConsoleTextAttribute (h, BACKGROUND_GREEN|FOREGROUND_INTENSITY );
+	//SetConsoleTextAttribute(h,FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY | BACKGROUND_BLUE);
+	printf("\a");
+	char sentgo[]="\n\n"
+              "\n\n\n\n\n\n"
+              "\t\t\t  Ok! Seems you become sooks!\n"
+              "\n\n"
+              "\t\t\t  Try to be more concentrated!\n"
+              "\n\n"
+              "\t\t\t  Ha Ha\n"
+              "\n\n"
+              "\t\t\t  .....\n"
+              "\n\n\t\t\t  ."
+              "\n\n\t\t\t  ."
+              "\n\n\t\t\t  ."
+              "\n\n\t\t\t  ."
+              "\n\n\t\t\t"
+              "\n\t\t\t  G  A  M  E    O  V  E  R!\n";
+                         
+	size=strlen(sentgo);
+	for(x=0;x<size;x++){   
+		Sleep(40); 
+		printf("%c",sentgo[x]);
+	}
+	Sleep(4000);
+	exit(0);
 }

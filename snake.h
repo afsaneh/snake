@@ -16,7 +16,7 @@ struct snake{
 	struct point points[HEIGHT * WIDTH];
 	int direction;
 	int len;
-	char color[20];
+	//BOOL WINAPI color;
 };
 
 //main.c
@@ -26,23 +26,24 @@ void initializeMatrix(char matrix[][WIDTH]);
 void putPoint(char, struct point);
 void line(char, struct point, struct point);
 void rectangle( char, struct point, int, int);
-void pointToString(struct point);
+void pointToString(struct point);	
 struct point addX(struct point, int);
 struct point addY(struct point, int);
 //snake.c
-void printSnake(struct snake *s);
-int sentinelIndex(struct snake *s);
-struct point head(struct snake *s);
-struct point tail(struct snake *s);
-int moveSnake(struct snake *s, int direction);
-int moveSnakeAI(struct snake *s);
-void insertHead(struct snake *s, struct point m);
-void insertTail(struct snake *s, struct point m);
-void removeHead(struct snake *s);
-void removeTail(struct snake *s);
-void snakeToString(struct snake *s);
+void printSnake(struct snake *);
+int sentinelIndex(struct snake *);
+struct point head(struct snake *);
+struct point tail(struct snake *);
+int moveSnake(struct snake *, int);
+int moveSnakeAI(struct snake *);
+void insertHead(struct snake *, struct point);
+void insertTail(struct snake *, struct point);
+void removeHead(struct snake *);
+void removeTail(struct snake *);
+void snakeToString(struct snake *);
 //void initSnake(struct point[], struct point);
 int isFreeSpace(struct point p);
+void gameover(char []);
 
 char canvas[HEIGHT][WIDTH];
 

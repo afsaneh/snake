@@ -54,17 +54,7 @@ int moveSnake(struct snake *s, int direction){
 			return 0;
 	}
 	else if (direction == RIGHT){
-		//printf("\nSnake after press right: ");
-		//snakeToString(s);
-		//printf("\nfirst\n");
-		//pointToString(tail(s));
-		//printf("\naddx tail: ");
-		//pointToString(addX(tail(s), 1));
 		insertTail(s, (addX(tail(s), 1)));
-		//printf("\nsnake after insert:");
-		//snakeToString(s);
-		//printf("\ntail\n");
-		//pointToString(tail(s));
 		if (!isFreeSpace(tail(s)))
 			return 0;
 	}
@@ -75,7 +65,6 @@ int moveSnake(struct snake *s, int direction){
 	}
 	putPoint(' ', head(s));
 	removeHead(s);
-	//pointToString(tail(&s));
 	putPoint('0', tail(s));
 
 	return 1;
@@ -83,113 +72,112 @@ int moveSnake(struct snake *s, int direction){
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-int moveSnakeAI(struct snake *sp){
-	struct point pointUp = addY(tail(sp), -1);
-	struct point pointDown = addY(tail(sp), 1);
-	struct point pointRight = addX(tail(sp), 1);
-	struct point pointLeft = addX(tail(sp), -1);
+int moveSnakeAI(struct snake *s){
+	struct point pointUp = addY(tail(s), -1);
+	struct point pointDown = addY(tail(s), 1);
+	struct point pointRight = addX(tail(s), 1);
+	struct point pointLeft = addX(tail(s), -1);
 	int makeUnexpectedTurn = 0;
 
 	if (rand() % 10 == 0)
 		makeUnexpectedTurn = 1;
 
-	putPoint(' ', head(sp));
+	putPoint(' ', head(s));
 
-	if (sp -> direction == UP){
+	if (s -> direction == UP){
 		if (isFreeSpace(pointUp)){
 			if (makeUnexpectedTurn && isFreeSpace(pointRight)){
-				sp -> direction = RIGHT;
-				return moveSnake(sp, RIGHT);
+				s -> direction = RIGHT;
+				return moveSnake(s, RIGHT);
 			}
 			if (makeUnexpectedTurn && isFreeSpace(pointLeft)){
-				sp -> direction = LEFT;
-				return moveSnake(sp, LEFT);
+				s -> direction = LEFT;
+				return moveSnake(s, LEFT);
 			}
 
-			return moveSnake(sp, UP);
+			return moveSnake(s, UP);
 			}
 		else{
 			if(isFreeSpace(pointRight)){
-				sp -> direction = RIGHT;
-				return moveSnake(sp, RIGHT);
+				s -> direction = RIGHT;
+				return moveSnake(s, RIGHT);
 			}
 			else{
-				sp -> direction = LEFT;
-				return moveSnake(sp, LEFT);
-			}
+				s -> direction = LEFT;
+				return moveSnake(s, LEFT);
+			}		
 		}
 	}
-	else if (sp -> direction == DOWN){
+	else if (s -> direction == DOWN){
 		if (isFreeSpace(pointDown)){
 			if (makeUnexpectedTurn && isFreeSpace(pointRight)){
-				sp -> direction = RIGHT;
-				return moveSnake(sp, RIGHT);
+				s -> direction = RIGHT;
+				return moveSnake(s, RIGHT);
 			}
 			if (makeUnexpectedTurn && isFreeSpace(pointLeft)){
-				sp -> direction = LEFT;
-				return moveSnake(sp, LEFT);
+				s -> direction = LEFT;
+				return moveSnake(s, LEFT);
 			}
-			return moveSnake(sp, DOWN);
+			return moveSnake(s, DOWN);
 		
 			}else{
-			if(isFreeSpace(pointRight)){
-				sp -> direction = RIGHT;
-				return moveSnake(sp, RIGHT);
+				if(isFreeSpace(pointRight)){
+					s -> direction = RIGHT;
+					return moveSnake(s, RIGHT);
 			}
-			else{
-				sp -> direction = LEFT;
-				return moveSnake(sp, LEFT);
+				else{
+						s -> direction = LEFT;
+						return moveSnake(s, LEFT);
+					}
 			}
-		}
 	}
-	else if (sp -> direction == RIGHT){
+	else if (s -> direction == RIGHT){
 		if (isFreeSpace(pointRight)){
 			if (makeUnexpectedTurn && isFreeSpace(pointUp)){
-				sp -> direction = UP;
-				return moveSnake(sp, UP);
+				s -> direction = UP;
+				return moveSnake(s, UP);
 			}
 			if (makeUnexpectedTurn && isFreeSpace(pointDown)){
-				sp -> direction = DOWN;
-				return moveSnake(sp, DOWN);
+				s -> direction = DOWN;
+				return moveSnake(s, DOWN);
 			}
 			
-			return moveSnake(sp, RIGHT);
+			return moveSnake(s, RIGHT);
 		
 			}else{
-			if(isFreeSpace(pointUp)){
-				sp -> direction = UP;
-				return moveSnake(sp, UP);
+				if(isFreeSpace(pointUp)){
+					s -> direction = UP;
+					return moveSnake(s, UP);
+				}
+				else{
+						s -> direction = DOWN;
+						return moveSnake(s, DOWN);
+					}
 			}
-			else{
-				sp -> direction = DOWN;
-				return moveSnake(sp, DOWN);
-			}
-		}
 	}
-	else if (sp -> direction == LEFT){
+	else if (s -> direction == LEFT){
 		if (isFreeSpace(pointLeft)){
 			if (makeUnexpectedTurn && isFreeSpace(pointUp)){
-				sp -> direction = UP;
-				return moveSnake(sp, UP);
+				s -> direction = UP;
+				return moveSnake(s, UP);
 			}
 			if (makeUnexpectedTurn && isFreeSpace(pointDown)){
-				sp -> direction = DOWN;
-				return moveSnake(sp, DOWN);
+				s -> direction = DOWN;
+				return moveSnake(s, DOWN);
 			}
 	
-
-		return moveSnake(sp, LEFT);
+		return moveSnake(s, LEFT);
 		
 		}
 		else{
 			if(isFreeSpace(pointUp)){
-				sp -> direction = UP;
-				return moveSnake(sp, UP);
+				s -> direction = UP;
+				return moveSnake(s, UP);
 			}
 			else{
-				sp -> direction = DOWN;
-				return moveSnake(sp, DOWN);
-			}
+					s -> direction = DOWN;
+					return moveSnake(s, DOWN);
+				}
 		}
 	}
 	return 0;
@@ -202,43 +190,36 @@ void insertHead(struct snake *s, struct point m){
 	//
 	int i;
 
-	for(i = sentinelIndex(s) ; i > 0; i--)
+	//for(i = sentinelIndex(s) ; i > 0; i--)
+		for(i = s -> len ; i > 0; i--)
 		s -> points[i+1] = s -> points[i];
 	s -> points[0] = m;
 }
 
 void insertTail(struct snake *s, struct point m){
-	//
 
-	//s.points[sentinelIndex(s) + 1] = SENTINEL;
-	//s.points[sentinelIndex(s)] = m;
-	//printf("\n snake in inserttail: ");
-	//snakeToString(s);
 	s -> points[(s -> len) + 1] = SENTINEL;
-	s -> points[(s -> len)] = m;
+	s -> points[s -> len] = m;
 	s -> len += 1;
-	//printf("\n snake after inserttail: ");
-	//snakeToString(s);
 }
 
 void removeHead(struct snake *s){
 		
 	int i;
 
-	for(i = 0; i < sentinelIndex(s); i++)
+	for(i = 0; i < s -> len; i++)
 		s -> points[i] = s -> points[i+1];
 	s -> len -= 1;
 }
 
 void removeTail(struct snake *s){
-	s -> points[sentinelIndex(s) - 1] = SENTINEL;
+	s -> points[(s -> len) - 1] = SENTINEL;
 }
 
 void snakeToString(struct snake *s){
 	int i;
 
 	for(i = 0; s -> points[i].x != -1 ; i++)
-	//for(i = 0; i < (s -> len) ; i++)
 		pointToString(s -> points[i]);
 }
 
@@ -253,8 +234,6 @@ void snakeToString(struct snake *s){
 }*/
 
 int isFreeSpace(struct point p){
-	//printf("\nFree Space: ");
-	//pointToString(p);
 	if (canvas[p.y][p.x] == ' ' )
 		return 1;
 	return 0;		
