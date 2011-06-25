@@ -39,7 +39,7 @@ int main(){
 
 	SetConsoleTitle("Snakes");
 	initializeMatrix(canvas);
-	system("COLOR 85");
+	system("COLOR 5");
 
 	for (i = 0; i < snake1.len ; i++)
 		snake1.points[i] = makePoint(i,5);
@@ -64,7 +64,7 @@ int main(){
 			}
 			while( !_kbhit()){
 				count++;
-				if (rand() % 20 == 0)
+				if (rand() % 500 == 0)
 					{
 					rx = rand() % WIDTH;
 					ry = rand() % HEIGHT;
@@ -78,6 +78,15 @@ int main(){
 					count = 0;
 					speed *= 0.99;
 				}
+				/*ret1 = movesnake(sjokfokoe)
+				ret2 = movesnakeAi(fkeo)
+
+				if ret1==0 && ret2 ==0
+					pflple
+				if ret1=0
+						1 baakht
+				else if ret2=0
+						2bakht*/
 				if (moveSnake(&snake1, dir1) == 0){
 					putPoint(' ', p); 
 					//printf("GAME OVER! PLAYER 2 WON!\n");
@@ -136,11 +145,11 @@ void putPoint(char character , struct point p){
     Position.X = p.x;
     Position.Y = p.y;
     SetConsoleCursorPosition(hOut, Position);
-	//SetConsoleTextAttribute(hOut,//BACKGROUND_GREEN| 
+	SetConsoleTextAttribute(hOut,//BACKGROUND_GREEN| 
 								//BACKGROUND_INTENSITY|
-								//FOREGROUND_RED | 
-								//FOREGROUND_GREEN | 
-								//FOREGROUND_INTENSITY);
+								FOREGROUND_RED | 
+								FOREGROUND_GREEN | 
+								FOREGROUND_INTENSITY);
     putchar(character);
 }
 

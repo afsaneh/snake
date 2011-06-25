@@ -78,6 +78,7 @@ int moveSnakeAI(struct snake *s){
 	struct point pointRight = addX(tail(s), 1);
 	struct point pointLeft = addX(tail(s), -1);
 	int makeUnexpectedTurn = 0;
+	int firstDir = 0, secondDir = 0;
 
 	if (rand() % 10 == 0)
 		makeUnexpectedTurn = 1;
@@ -133,18 +134,28 @@ int moveSnakeAI(struct snake *s){
 	}
 	else if (s -> direction == RIGHT){
 		if (isFreeSpace(pointRight)){
-			if (makeUnexpectedTurn && isFreeSpace(pointUp)){
-				s -> direction = UP;
-				return moveSnake(s, UP);
+			if (makeUnexpectedTurn){
+				firstDir = UP;
+				secondDir = DOWN;
+				if (rand() % 2 == 0){
+					firstDir = DOWN;
+					secondDir = UP;
+				}
+		
+				if ((firstDir == UP && isFreeSpace(pointUp)) || 
+					(firstDir == DOWN && isFreeSpace(pointDown))){
+					s -> direction = firstDir;
+					return moveSnake(s, firstDir);
+				}
+				if ((secondDir == DOWN && isFreeSpace(pointDown)) || 
+					(secondDir == UP && isFreeSpace(pointUp))){
+					s -> direction = secondDir;
+					return moveSnake(s, secondDir);
+				}	
 			}
-			if (makeUnexpectedTurn && isFreeSpace(pointDown)){
-				s -> direction = DOWN;
-				return moveSnake(s, DOWN);
-			}
-			
 			return moveSnake(s, RIGHT);
 		
-			}else{
+		}else{
 				if(isFreeSpace(pointUp)){
 					s -> direction = UP;
 					return moveSnake(s, UP);
@@ -157,16 +168,27 @@ int moveSnakeAI(struct snake *s){
 	}
 	else if (s -> direction == LEFT){
 		if (isFreeSpace(pointLeft)){
-			if (makeUnexpectedTurn && isFreeSpace(pointUp)){
-				s -> direction = UP;
-				return moveSnake(s, UP);
+			if (makeUnexpectedTurn){
+				firstDir = UP;
+				secondDir = DOWN;
+				if (rand() % 2 == 0){
+					firstDir = DOWN;
+					secondDir = UP;
+				}
+		
+				if ((firstDir == UP && isFreeSpace(pointUp)) || 
+					(firstDir == DOWN && isFreeSpace(pointDown))){
+					s -> direction = firstDir;
+					return moveSnake(s, firstDir);
+				}
+				if ((secondDir == DOWN && isFreeSpace(pointDown)) || 
+					(secondDir == UP && isFreeSpace(pointUp))){
+					s -> direction = secondDir;
+					return moveSnake(s, secondDir);
+				}	
+			
 			}
-			if (makeUnexpectedTurn && isFreeSpace(pointDown)){
-				s -> direction = DOWN;
-				return moveSnake(s, DOWN);
-			}
-	
-		return moveSnake(s, LEFT);
+			return moveSnake(s, LEFT);
 		
 		}
 		else{
